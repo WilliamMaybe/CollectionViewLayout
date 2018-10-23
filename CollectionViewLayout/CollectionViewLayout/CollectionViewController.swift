@@ -21,6 +21,7 @@ class CollectionViewController: UICollectionViewController {
     override func viewDidLoad() {
         refresh()
         super.viewDidLoad()
+        collectionView?.isPrefetchingEnabled = false
     }
 
     @IBAction func addEmoji(_ sender: Any) {

@@ -20,41 +20,16 @@ class CollectionViewSectionColorFlowLayout: UICollectionViewFlowLayout {
         register(CollectionViewSectionColorView.self, forDecorationViewOfKind: CollectionViewSectionColorView.identifier)
     }
     
+    override func shouldInvalidateLayout(forBoundsChange newBounds: CGRect) -> Bool {
+        let oldBounds = collectionView?.bounds ?? .zero
+        return !oldBounds.equalTo(newBounds)
+    }
+    
     override func layoutAttributesForElements(in rect: CGRect) -> [UICollectionViewLayoutAttributes]? {
         let tmp = super.layoutAttributesForElements(in: rect)
         
-        guard var attributes = tmp else {
-            return tmp
-        }
+        guard var attributes = tmp else { return tmp }
         
-        
-        guard let numberOfSection = collectionView?.numberOfSections  else {
-            return attributes
-        }
-        #if TEST
-        for section in 0..<numberOfSection {
-            guard let numberOfItems = collectionView?.numberOfItems(inSection: section) else {
-                continue;
-            }
-            
-            if numberOfItems == 0 {
-                continue
-            }
-            
-            let start = layoutAttributesForItem(at: IndexPath(row: 0, section: section))!
-            let end = layoutAttributesForItem(at: IndexPath(row: numberOfItems - 1, section: section))!
-            
-            guard let decoration = layoutAttributesForDecorationView(ofKind: CollectionViewSectionColorView.identifier, at: start.indexPath) else {
-                continue
-            }
-
-//            let decoration = UICollectionViewLayoutAttributes(forDecorationViewOfKind: CollectionViewSectionColorView.identifier, with: start.indexPath)
-//            decoration.zIndex = -1
-            
-            decoration.frame = CGRect(x: 0, y: start.frame.minY - sectionInset.top, width: collectionView?.frame.width ?? 0, height: end.frame.maxY - start.frame.minY + sectionInset.top + sectionInset.bottom )
-            attributes.append(decoration)
-        }
-        #endif
         var sections: Set<Int> = []
         for attribute in attributes {
             if attribute.representedElementCategory == .cell {
